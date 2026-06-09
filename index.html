@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Epico Caps | Demo tienda online</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="#inicio" aria-label="Epico Caps">
+        <span class="brand-mark">E</span>
+        <span>Epico Caps</span>
+      </a>
+      <nav class="nav">
+        <a href="#coleccion">Coleccion</a>
+        <a href="#reserva">Comprar</a>
+        <a href="#pago">Pago</a>
+      </nav>
+      <button class="icon-button cart-toggle" type="button" aria-label="Abrir pedido">
+        <span class="cart-count">0</span>
+        <span class="cart-glyph">C</span>
+      </button>
+    </header>
+
+    <main>
+      <section class="hero" id="inicio">
+        <div class="hero-copy">
+          <p class="eyebrow">Nueva coleccion 2026</p>
+          <h1>Gorras con presencia de estadio y compra online en dos toques.</h1>
+          <p class="hero-text">
+            Elegi tu modelo, compra online y paga el total por Mercado Pago.
+            Coordinamos retiro o envio en minutos.
+          </p>
+          <div class="hero-actions">
+            <a class="primary-button" href="#coleccion">Ver gorras</a>
+            <a class="ghost-button" href="#reserva">Comprar ahora</a>
+          </div>
+          <div class="hero-stats" aria-label="Beneficios">
+            <span><strong>24 h</strong> entrega</span>
+            <span><strong>10</strong> modelos</span>
+            <span><strong>MP</strong> pago facil</span>
+          </div>
+        </div>
+
+        <div class="hero-stage" aria-label="Producto destacado">
+          <div class="scan-line"></div>
+          <img id="heroImage" src="assets/cap-uruguay-sky.jpeg" alt="Gorra celeste Uruguay rumbo al mundial" />
+          <div class="floating-panel">
+            <span>Drop activo</span>
+            <strong id="heroName">Gorro Celeste Uruguay</strong>
+          </div>
+        </div>
+      </section>
+
+      <section class="ticker" aria-label="Promociones">
+        <div>
+          <span>Compra online</span>
+          <span>Mercado Pago</span>
+          <span>Envios coordinados</span>
+          <span>Stock limitado</span>
+          <span>Fotos reales</span>
+          <span>Checkout express</span>
+        </div>
+      </section>
+
+      <section class="section collection" id="coleccion">
+        <div class="section-heading">
+          <p class="eyebrow">Catalogo</p>
+          <h2>Elegis modelo, cantidad y queda pronto para pagar.</h2>
+        </div>
+
+        <div class="product-grid" id="productGrid"></div>
+      </section>
+
+      <section class="feature-split" id="reserva">
+        <div class="reserve-panel">
+          <p class="eyebrow">Compra online</p>
+          <h2>Sin vueltas: datos, entrega y pago completo.</h2>
+          <form class="reserve-form" id="reserveForm">
+            <label>
+              Nombre
+              <input name="name" type="text" placeholder="Tu nombre" required />
+            </label>
+            <label>
+              Telefono
+              <input name="phone" type="tel" placeholder="Ej: 099 123 456" required />
+            </label>
+            <label>
+              Entrega
+              <select name="delivery">
+                <option>Retiro coordinado</option>
+                <option>Envio Montevideo</option>
+                <option>Envio interior</option>
+              </select>
+            </label>
+            <label>
+              Pago
+              <select name="payment">
+                <option>Pago completo por Mercado Pago</option>
+                <option>Pago completo al retirar</option>
+              </select>
+            </label>
+            <button class="primary-button full" type="submit">Confirmar pedido</button>
+          </form>
+        </div>
+
+        <div class="checkout-panel" id="pago">
+          <div class="checkout-top">
+            <p class="eyebrow">Checkout demo</p>
+            <span class="secure-badge">Pago protegido</span>
+          </div>
+          <div class="cart-list" id="cartList">
+            <p class="empty-cart">Agrega una gorra para ver tu pedido.</p>
+          </div>
+          <div class="total-row">
+            <span>Total</span>
+            <strong id="cartTotal">$0</strong>
+          </div>
+          <button class="mp-button" id="payButton" type="button">
+            <span>Mercado Pago</span>
+            <strong>Pagar total</strong>
+          </button>
+          <p class="microcopy">
+            Al finalizar, recibis la confirmacion del pedido y los datos de entrega.
+          </p>
+        </div>
+      </section>
+
+      <section class="section trust-row">
+        <article>
+          <span>01</span>
+          <h3>Stock por color</h3>
+          <p>Cada tarjeta muestra disponibilidad y ayuda a empujar compra rapida.</p>
+        </article>
+        <article>
+          <span>02</span>
+          <h3>Pedido ordenado</h3>
+          <p>El pedido junta nombre, telefono, entrega, pago completo y modelos elegidos.</p>
+        </article>
+        <article>
+          <span>03</span>
+          <h3>Lista para escalar</h3>
+          <p>Compra simple: elegis, pagas y coordinamos la entrega.</p>
+        </article>
+      </section>
+    </main>
+
+    <aside class="toast" id="toast" role="status" aria-live="polite"></aside>
+
+    <footer class="footer">
+      <strong>Epico Caps</strong>
+      <span>Gorras seleccionadas, pago online y entrega coordinada.</span>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>
