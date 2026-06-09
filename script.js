@@ -1,75 +1,83 @@
 const products = [
   {
     id: "uru-sky",
-    name: "Gorro Celeste Uruguay",
-    team: "Seleccion Uruguay",
+    name: "Gorro",
+    variant: "Celeste con malla",
     price: 1890,
     stock: 7,
     image: "assets/cap-uruguay-sky.jpeg",
-    detail: "Malla respirable, parche A.U.F. y look mundialista."
+    detail: "Malla respirable, parche frontal y terminacion mundialista.",
+    labels: ["Nuevo", "Mas vendido"]
   },
   {
     id: "uru-black",
-    name: "Gorro Negro Uruguay",
-    team: "Seleccion Uruguay",
+    name: "Gorro",
+    variant: "Negro premium",
     price: 2190,
     stock: 4,
     image: "assets/cap-uruguay-black.jpeg",
-    detail: "Cuero negro, textura fuerte y presencia nocturna."
+    detail: "Textura tipo cuero, malla lateral y presencia urbana.",
+    labels: ["Nuevo"]
   },
   {
     id: "nacional-red",
-    name: "Gorro Rojo",
-    team: "Club Nacional",
+    name: "Gorro",
+    variant: "Rojo intenso",
     price: 1690,
     stock: 5,
     image: "assets/cap-nacional-red.jpeg",
-    detail: "Rojo fuerte, bordado azul y blanco, energia de tribuna."
+    detail: "Color fuerte, bordado destacado y ajuste regulable.",
+    labels: ["Oferta"]
   },
   {
     id: "defensor-black",
-    name: "Gorro Negro",
-    team: "Defensor Sporting",
+    name: "Gorro",
+    variant: "Negro clasico",
     price: 1790,
     stock: 6,
     image: "assets/cap-defensor-black.jpeg",
-    detail: "Negra total con escudo contrastado y visera texturada."
+    detail: "Negro total con visera texturada y escudo frontal.",
+    labels: ["Mas vendido"]
   },
   {
     id: "nacional-blue",
-    name: "Gorro Azul Marino",
-    team: "Club Nacional",
+    name: "Gorro",
+    variant: "Azul marino",
     price: 1590,
     stock: 8,
     image: "assets/cap-nacional-blue.jpeg",
-    detail: "Azul profundo, bordado rojo y ajuste snapback."
+    detail: "Azul profundo, bordado rojo y silueta limpia.",
+    labels: ["Nuevo"]
   },
   {
     id: "nacional-sky",
-    name: "Gorro Celeste",
-    team: "Club Nacional",
+    name: "Gorro",
+    variant: "Celeste claro",
     price: 1590,
     stock: 10,
     image: "assets/cap-sky-blue.jpeg",
-    detail: "Celeste claro con bordado blanco, limpia y fresca."
+    detail: "Tono claro, bordado blanco y ajuste comodo.",
+    labels: ["Oferta"]
   },
   {
     id: "white-blue",
-    name: "Gorro Blanco y Azul",
-    team: "Club Nacional",
+    name: "Gorro",
+    variant: "Blanco y azul",
     price: 1490,
     stock: 9,
     image: "assets/cap-duo-white-blue.jpeg",
-    detail: "Blanca con visera azul, bordado rojo y silueta clasica."
+    detail: "Base blanca, visera azul y detalle bordado.",
+    labels: ["Nuevo"]
   },
   {
     id: "white-patch",
-    name: "Gorro Blanco Mesh",
-    team: "Edicion Epico",
+    name: "Gorro",
+    variant: "Blanco mesh",
     price: 1390,
     stock: 12,
     image: "assets/cap-white-patch.jpeg",
-    detail: "Modelo trucker blanco con parches laterales."
+    detail: "Modelo trucker blanco, liviano y fresco.",
+    labels: ["Oferta"]
   }
 ];
 
@@ -79,7 +87,10 @@ const cartTotal = document.querySelector("#cartTotal");
 const cartCount = document.querySelector(".cart-count");
 const heroImage = document.querySelector("#heroImage");
 const heroName = document.querySelector("#heroName");
+const heroVariant = document.querySelector("#heroVariant");
 const toast = document.querySelector("#toast");
+const header = document.querySelector("#siteHeader");
+const backTop = document.querySelector("#backTop");
 const cart = new Map();
 const money = new Intl.NumberFormat("es-UY", {
   style: "currency",
@@ -91,13 +102,17 @@ function renderProducts() {
   grid.innerHTML = products
     .map(
       (product) => `
-        <article class="product-card" data-id="${product.id}">
+        <article class="product-card reveal" data-id="${product.id}">
           <div class="product-media">
-            <img src="${product.image}" alt="${product.name}" loading="lazy" />
-            <span class="stock-badge">${product.stock} en stock</span>
+            <div class="product-badges">
+              ${product.labels.map((label, index) => `<span class="badge ${index === 0 ? "gold" : ""}">${label}</span>`).join("")}
+              <span class="badge">${product.stock} stock</span>
+            </div>
+            <img src="${product.image}" alt="${product.name} ${product.variant}" loading="lazy" />
           </div>
           <div class="product-body">
-            <div class="product-meta">
+            <span class="variant-pill">${product.variant}</span>
+            <div class="product-top">
               <div>
                 <h3>${product.name}</h3>
                 <p>${product.detail}</p>
@@ -121,7 +136,7 @@ function renderCart() {
   cartTotal.textContent = money.format(total);
 
   if (!items.length) {
-    cartList.innerHTML = `<p class="empty-cart">Agrega una gorra para ver el resumen.</p>`;
+    cartList.innerHTML = `<p class="empty-cart">Agrega un gorro para ver tu pedido.</p>`;
     return;
   }
 
@@ -131,7 +146,7 @@ function renderCart() {
         <div class="cart-item">
           <div>
             <strong>${item.name}</strong>
-            <small>${item.qty} x ${money.format(item.price)}</small>
+            <small>${item.variant} - ${item.qty} x ${money.format(item.price)}</small>
           </div>
           <button class="remove-button" type="button" data-remove="${item.id}" aria-label="Quitar ${item.name}">x</button>
         </div>
@@ -152,17 +167,117 @@ function addToCart(id) {
   const current = cart.get(id);
 
   if (current && current.qty >= product.stock) {
-    showToast("No queda mas stock disponible para ese modelo.");
+    showToast("No queda mas stock de ese gorro.");
     return;
   }
 
   cart.set(id, { ...product, qty: current ? current.qty + 1 : 1 });
   renderCart();
-  showToast(`${product.name} agregada al pedido.`);
+  showToast(`Gorro agregado al pedido.`);
+}
+
+function updateHero(product) {
+  heroImage.classList.add("swap");
+  window.setTimeout(() => {
+    heroImage.src = product.image;
+    heroImage.alt = `${product.name} ${product.variant}`;
+    heroName.textContent = product.name;
+    heroVariant.textContent = product.variant;
+    heroImage.classList.remove("swap");
+  }, 220);
+}
+
+function handleScroll() {
+  const y = window.scrollY;
+  header.classList.toggle("scrolled", y > 18);
+  backTop.classList.toggle("show", y > 520);
+  document.documentElement.style.setProperty("--parallax", `${Math.min(y * 0.12, 70)}px`);
+}
+
+function initReveal() {
+  const revealObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) entry.target.classList.add("visible");
+      });
+    },
+    { threshold: 0.14 }
+  );
+
+  document.querySelectorAll(".reveal").forEach((element, index) => {
+    element.style.transitionDelay = `${Math.min(index * 18, 180)}ms`;
+    revealObserver.observe(element);
+  });
+}
+
+function initCounters() {
+  const counters = document.querySelectorAll("[data-count]");
+  const counterObserver = new IntersectionObserver(
+    (entries, observer) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        const target = Number(entry.target.dataset.count);
+        const start = performance.now();
+        const duration = 1200;
+
+        function tick(now) {
+          const progress = Math.min((now - start) / duration, 1);
+          const eased = 1 - Math.pow(1 - progress, 3);
+          entry.target.textContent = Math.round(target * eased).toLocaleString("es-UY");
+          if (progress < 1) requestAnimationFrame(tick);
+        }
+
+        requestAnimationFrame(tick);
+        observer.unobserve(entry.target);
+      });
+    },
+    { threshold: 0.6 }
+  );
+
+  counters.forEach((counter) => counterObserver.observe(counter));
+}
+
+function initGallery() {
+  const lightbox = document.querySelector("#lightbox");
+  const lightboxImage = document.querySelector("#lightboxImage");
+  const closeButton = document.querySelector("#closeLightbox");
+
+  document.querySelectorAll("[data-gallery]").forEach((button) => {
+    button.addEventListener("click", () => {
+      lightboxImage.src = button.dataset.gallery;
+      lightbox.classList.add("open");
+      lightbox.setAttribute("aria-hidden", "false");
+      document.body.classList.add("lightbox-open");
+    });
+  });
+
+  function close() {
+    lightbox.classList.remove("open");
+    lightbox.setAttribute("aria-hidden", "true");
+    document.body.classList.remove("lightbox-open");
+  }
+
+  closeButton.addEventListener("click", close);
+  lightbox.addEventListener("click", (event) => {
+    if (event.target === lightbox) close();
+  });
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") close();
+  });
 }
 
 renderProducts();
 renderCart();
+initReveal();
+initCounters();
+initGallery();
+handleScroll();
+
+window.addEventListener("load", () => {
+  window.setTimeout(() => document.querySelector("#loader").classList.add("hide"), 520);
+});
+
+window.addEventListener("scroll", handleScroll, { passive: true });
 
 document.addEventListener("click", (event) => {
   const addButton = event.target.closest("[data-add]");
@@ -174,28 +289,22 @@ document.addEventListener("click", (event) => {
   if (removeButton) {
     cart.delete(removeButton.dataset.remove);
     renderCart();
-    showToast("Modelo quitado del pedido.");
+    showToast("Gorro quitado del pedido.");
   }
 
-  if (card && !addButton) {
+  if (card && !addButton && !removeButton) {
     const product = products.find((item) => item.id === card.dataset.id);
-    heroImage.classList.add("swap");
-    window.setTimeout(() => {
-      heroImage.src = product.image;
-      heroImage.alt = product.name;
-      heroName.textContent = product.name;
-      heroImage.classList.remove("swap");
-    }, 220);
+    updateHero(product);
   }
 });
 
-document.querySelector(".cart-toggle").addEventListener("click", () => {
-  document.querySelector("#pago").scrollIntoView({ behavior: "smooth", block: "center" });
+document.querySelector(".cart-button").addEventListener("click", () => {
+  document.querySelector("#checkout").scrollIntoView({ behavior: "smooth", block: "start" });
 });
 
 document.querySelector("#payButton").addEventListener("click", () => {
   if (!cart.size) {
-    showToast("Primero agrega una gorra al pedido.");
+    showToast("Primero agrega un gorro al pedido.");
     return;
   }
   showToast("Pago completo por Mercado Pago listo para continuar.");
@@ -207,36 +316,35 @@ document.querySelector("#reserveForm").addEventListener("submit", (event) => {
   const name = formData.get("name").trim();
 
   if (!cart.size) {
-    showToast("Agrega al menos una gorra antes de confirmar el pedido.");
+    showToast("Agrega al menos un gorro antes de confirmar el pedido.");
     return;
   }
 
   showToast(`Pedido generado para ${name}. Ya queda pronto para pagar.`);
 });
 
-const revealObserver = new IntersectionObserver(
-  (entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) entry.target.classList.add("visible");
-    });
-  },
-  { threshold: 0.12 }
-);
+document.querySelector("#menuToggle").addEventListener("click", (event) => {
+  const isOpen = document.body.classList.toggle("menu-open");
+  event.currentTarget.setAttribute("aria-expanded", String(isOpen));
+});
 
-document.querySelectorAll(".product-card").forEach((card, index) => {
-  card.style.transitionDelay = `${Math.min(index * 45, 260)}ms`;
-  revealObserver.observe(card);
+document.querySelectorAll(".nav a").forEach((link) => {
+  link.addEventListener("click", () => {
+    document.body.classList.remove("menu-open");
+    document.querySelector("#menuToggle").setAttribute("aria-expanded", "false");
+  });
+});
+
+document.querySelector("#themeToggle").addEventListener("click", () => {
+  document.body.classList.toggle("dark");
+});
+
+backTop.addEventListener("click", () => {
+  window.scrollTo({ top: 0, behavior: "smooth" });
 });
 
 let heroIndex = 0;
 window.setInterval(() => {
   heroIndex = (heroIndex + 1) % products.length;
-  const product = products[heroIndex];
-  heroImage.classList.add("swap");
-  window.setTimeout(() => {
-    heroImage.src = product.image;
-    heroImage.alt = product.name;
-    heroName.textContent = product.name;
-    heroImage.classList.remove("swap");
-  }, 220);
-}, 4200);
+  updateHero(products[heroIndex]);
+}, 4700);
